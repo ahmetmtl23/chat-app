@@ -8,9 +8,18 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div class="chat-container">
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <h2>Chat Uygulamasına Hoş Geldiniz</h2>
+            <input type="text" id="username-input" placeholder="Kullanıcı adınızı girin" maxlength="20">
+            <button onclick="joinChat()">Sohbete Katıl</button>
+        </div>
+    </div>
+
+    <div id="chat-screen" class="chat-container" style="display: none;">
         <div class="chat-header">
             <h1>Chat Uygulaması</h1>
+            <span id="username-display"></span>
         </div>
         <div class="chat-messages" id="messageArea">
             <!-- Mesajlar buraya gelecek -->

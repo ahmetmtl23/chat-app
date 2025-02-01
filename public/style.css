@@ -79,3 +79,50 @@ button {
 button:hover {
     background-color: #677bc4;
 }
+
+.login-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #36393f;
+}
+
+.login-box {
+    background-color: #2f3136;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #40444b;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+#username-display {
+    color: #72767d;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
