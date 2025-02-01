@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Uygulaması</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <div class="sidebar">
+            <div class="user-info">
+                <img src="default-avatar.png" alt="Avatar" class="avatar">
+                <span id="username">Kullanıcı</span>
+            </div>
+            <div class="channels">
+                <h3>Kanallar</h3>
+                <ul id="channelList">
+                    <li class="active">Genel</li>
+                </ul>
+            </div>
+            <div class="users">
+                <h3>Çevrimiçi Kullanıcılar</h3>
+                <ul id="userList"></ul>
+            </div>
+        </div>
+
+        <!-- Ana İçerik -->
+        <div class="main-content">
+            <!-- Sohbet Başlığı -->
+            <div class="chat-header">
+                <h2>Genel Kanal</h2>
+                <div class="controls">
+                    <button id="voiceButton">🎤 Ses</button>
+                    <button id="screenButton">🖥️ Ekran Paylaş</button>
+                </div>
+            </div>
+
+            <!-- Sohbet Alanı -->
+            <div class="chat-area">
+                <div id="messages" class="messages"></div>
+                
+                <!-- Sesli/Görüntülü Alan -->
+                <div id="mediaArea" class="media-area" style="display: none;">
+                    <video id="localVideo" autoplay muted></video>
+                    <video id="remoteVideo" autoplay></video>
+                    <video id="screenShare" autoplay></video>
+                </div>
+            </div>
+
+            <!-- Mesaj Girişi -->
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Mesajınızı yazın...">
+                <button id="sendButton">Gönder</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

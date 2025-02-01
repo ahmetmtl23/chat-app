@@ -5,8 +5,6 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
 
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -16,47 +14,87 @@ const io = socketIo(server, {
     }
 });
 
-// Kullanıcı listesi
+// Aktif kullanıcıları ve odaları tutacak Map'ler
 const users = new Map();
+const rooms = new Map();
 
-// Socket.IO bağlantı yönetimi
 io.on('connection', (socket) => {
     console.log('Yeni kullanıcı bağlandı:', socket.id);
 
-    // Kullanıcı katılma olayı
+    // Kullanıcı katılma
     socket.on('join', (data) => {
-        users.set(socket.id, data.username);
-        io.emit('message', {
-            username: 'Sistem',
-            message: `${data.username} sohbete katıldı!`,
+        users.set(socket.id, {
+            id: socket.id,
+            username: data.username,
+            room: 'genel'
+        });
+        
+        socket.join('genel');
+        
+        // Kullanıcı listesini güncelle
+        io.to('genel').emit('users-update', Array.from(users.values()));
+        
+        // Katılma mesajı
+        io.to('genel').emit('message', {
+            type: 'system',
+            content: `${data.username} sohbete katıldı!`,
             timestamp: new Date()
         });
     });
 
-    // Mesaj gönderme olayı
+    // Mesaj gönderme
     socket.on('message', (data) => {
-        io.emit('message', {
-            username: users.get(socket.id),
-            message: data.message,
-            timestamp: new Date()
-        });
-    });
-
-    // Bağlantı kopma olayı
-    socket.on('disconnect', () => {
-        const username = users.get(socket.id);
-        if (username) {
-            io.emit('message', {
-                username: 'Sistem',
-                message: `${username} sohbetten ayrıldı.`,
+        const user = users.get(socket.id);
+        if (user) {
+            io.to(user.room).emit('message', {
+                type: 'chat',
+                userId: socket.id,
+                username: user.username,
+                content: data.message,
                 timestamp: new Date()
             });
+        }
+    });
+
+    // WebRTC sinyalleşme
+    socket.on('signal', (data) => {
+        const user = users.get(socket.id);
+        if (user) {
+            socket.to(user.room).emit('signal', {
+                userId: socket.id,
+                signal: data
+            });
+        }
+    });
+
+    // Ekran paylaşımı
+    socket.on('screen-share', (data) => {
+        const user = users.get(socket.id);
+        if (user) {
+            socket.to(user.room).emit('screen-share', {
+                userId: socket.id,
+                ...data
+            });
+        }
+    });
+
+    // Bağlantı kopması
+    socket.on('disconnect', () => {
+        const user = users.get(socket.id);
+        if (user) {
+            io.to(user.room).emit('message', {
+                type: 'system',
+                content: `${user.username} ayrıldı.`,
+                timestamp: new Date()
+            });
+            
             users.delete(socket.id);
+            io.to(user.room).emit('users-update', Array.from(users.values()));
         }
     });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server ${PORT} portunda çalışıyor`);
+    console.log(`Sunucu ${PORT} portunda çalışıyor`);
 });
